@@ -1,0 +1,6 @@
+@APIecommerce_HostAddress = http://localhost:5261
+
+GET {{APIecommerce_HostAddress}}/api/Categories
+Accept: application/json
+
+###
