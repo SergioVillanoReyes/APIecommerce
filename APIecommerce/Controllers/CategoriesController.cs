@@ -2,7 +2,6 @@ using APIecommerce.Models;
 using APIecommerce.Models.Dtos;
 using APIecommerce.Repository.IRepository;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIecommerce.Controllers

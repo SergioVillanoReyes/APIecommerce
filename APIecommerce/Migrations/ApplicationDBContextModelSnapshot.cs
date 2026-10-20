@@ -88,6 +88,31 @@ namespace APIecommerce.Migrations
                     b.ToTable("Products");
                 });
 
+            modelBuilder.Entity("APIecommerce.Models.User", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Role")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("id");
+
+                    b.ToTable("Users");
+                });
+
             modelBuilder.Entity("APIecommerce.Models.Product", b =>
                 {
                     b.HasOne("APIecommerce.Models.Category", "Category")

@@ -13,6 +13,7 @@ builder.Services.AddDbContext<ApplicationDBContext>(options => options.UseSqlSer
 
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddAutoMapper(_ => { }, typeof(Program).Assembly);
 
