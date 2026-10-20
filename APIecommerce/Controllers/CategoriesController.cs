@@ -2,6 +2,7 @@ using APIecommerce.Models;
 using APIecommerce.Models.Dtos;
 using APIecommerce.Repository.IRepository;
 using AutoMapper;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIecommerce.Controllers
@@ -22,6 +23,7 @@ namespace APIecommerce.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        //[EnableCors(PolicyNames.AllowSpecificOrigin)] CORS ONLY IN EPECIFIC PLACE
         public IActionResult GetCategories()
         {
             var categories = _categoryRepository.GetCategories();
