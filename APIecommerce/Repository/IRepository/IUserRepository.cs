@@ -6,13 +6,13 @@ namespace APIecommerce.Repository.IRepository;
 
 public interface IUserRepository
 {
-    ICollection<User> Getusers();
+    ICollection<ApplicationUser> Getusers();
 
-    User? GetUser(int id);
+    ApplicationUser? GetUser(string id);
 
     bool IsUniqueUser(string name);
 
     Task<UserLoginResponseDto> Login(UserLoginDto user);
 
-    Task<User> Register(CreateUserDto user);
+    Task<UserDataDto> Register(CreateUserDto user);
 }

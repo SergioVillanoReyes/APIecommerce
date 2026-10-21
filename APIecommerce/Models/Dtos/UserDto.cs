@@ -4,13 +4,10 @@ namespace APIecommerce.Models.Dtos;
 
 public class UserDto
 {
-    public int id { get; set; }
+    public string id { get; set; } = string.Empty;
 
     public string? Name { get; set; }
 
     public string? Username { get; set; }
 
-    public string? Password { get; set; }
-
-    public string? Role { get; set; }
 }

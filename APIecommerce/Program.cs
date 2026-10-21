@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Asp.Versioning;
+using Microsoft.AspNetCore.Identity;
+using APIecommerce.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +23,10 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddAutoMapper(_ => { }, typeof(Program).Assembly);
+
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+.AddEntityFrameworkStores<ApplicationDBContext>()
+.AddDefaultTokenProviders();
 
 
 var secretKey = builder.Configuration.GetValue<string>("ApiSettings:SecretKey");

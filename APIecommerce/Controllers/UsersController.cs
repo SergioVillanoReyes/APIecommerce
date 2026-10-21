@@ -32,12 +32,12 @@ namespace APIecommerce.Controllers
             return Ok(usersDto);
         }
 
-        [HttpGet("{userId:int}", Name = "Getuser")]
+        [HttpGet("{userId}", Name = "Getuser")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult Getuser(int userId)
+        public IActionResult Getuser(string userId)
         {
             var user = _userRepository.GetUser(userId);
             if(user == null)
@@ -78,7 +78,7 @@ namespace APIecommerce.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error al registrar el usuario");
             }
-            return CreatedAtRoute("Getuser", new { userId = result.id }, result);
+            return CreatedAtRoute("Getuser", new { userId = result.Id }, result);
 
         }
 
