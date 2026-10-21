@@ -1,12 +1,14 @@
 using APIecommerce.Models.Dtos;
 using APIecommerce.Repository.IRepository;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIecommerce.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class UsersController : ControllerBase
     {
         
@@ -53,6 +55,7 @@ namespace APIecommerce.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status201Created)]
+        [AllowAnonymous]
         public async Task<IActionResult> RegisterUser([FromBody] CreateUserDto createUserDto)
         {
             if(createUserDto == null || !ModelState.IsValid)
@@ -75,7 +78,7 @@ namespace APIecommerce.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error al registrar el usuario");
             }
-            return CreatedAtRoute("GetUser", new { result.id }, result);
+            return CreatedAtRoute("Getuser", new { userId = result.id }, result);
 
         }
 
@@ -85,6 +88,7 @@ namespace APIecommerce.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [AllowAnonymous]
         public async Task<IActionResult> LoginUser([FromBody] UserLoginDto userLoginDto)
         {
             if(userLoginDto == null || !ModelState.IsValid)
