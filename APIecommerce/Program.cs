@@ -6,7 +6,7 @@ using APIecommerce.Constants;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Microsoft.AspNetCore.Mvc;
+using Asp.Versioning;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,6 +52,19 @@ builder.Services.AddControllers(options =>
 });
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+var apiVersionigBuilder = builder.Services.AddApiVersioning(options =>
+{
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.ReportApiVersions = true;
+    // options.ApiVersionReader = ApiVersionReader.Combine( new QueryStringApiVersionReader("api-version"));
+});
+apiVersionigBuilder.AddApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
+});
 
 builder.Services.AddCors(options =>
 {
