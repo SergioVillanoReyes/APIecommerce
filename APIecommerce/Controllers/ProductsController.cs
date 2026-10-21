@@ -59,7 +59,7 @@ namespace APIecommerce.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public IActionResult CreateProduct([FromBody] CreateProductDto createProductDto)
+        public IActionResult CreateProduct([FromForm] CreateProductDto createProductDto)
         {
             if(createProductDto == null)
             {
@@ -79,6 +79,37 @@ namespace APIecommerce.Controllers
             }
 
             var product = _mapper.Map<Product>(createProductDto);
+
+            //addImage
+            if(createProductDto.Image != null)
+            {
+                string fileName = product.ProductId+Guid.NewGuid().ToString()+Path.GetExtension(createProductDto.Image.FileName);
+                var imageFolder = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot", "ProductsImages");
+
+                if (!Directory.Exists(imageFolder))
+                {
+                    Directory.CreateDirectory(imageFolder);
+                }
+
+                var filePath = Path.Combine(imageFolder, fileName);
+                FileInfo file = new FileInfo(filePath);
+                if (file.Exists)
+                {
+                    file.Delete();
+                }
+                using var fileStream = new FileStream(filePath, FileMode.Create);
+                createProductDto.Image.CopyTo(fileStream);
+
+                var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.Value}{HttpContext.Request.PathBase.Value}";
+
+                product.ImgUrl = $"{baseUrl}/ProductsImages/{fileName}";
+                product.ImgUrlLocal = filePath;
+
+            } else
+            {
+                product.ImgUrlLocal = "https://placehold.co/600x400";
+            }
+
             if (!_productRepository.CreateProduct(product))
             {
                 ModelState.AddModelError("CustomError", "Ocurrio un error");
@@ -156,7 +187,7 @@ namespace APIecommerce.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult UpdateProduct(int productId, [FromBody] UpdateProductDto updateProductDto)
+        public IActionResult UpdateProduct(int productId, [FromForm] UpdateProductDto updateProductDto)
         {
             if(updateProductDto == null)
             {
@@ -177,6 +208,37 @@ namespace APIecommerce.Controllers
 
             var product = _mapper.Map<Product>(updateProductDto);
             product.ProductId = productId;
+
+            //addImage
+            if(updateProductDto.Image != null)
+            {
+                string fileName = product.ProductId+Guid.NewGuid().ToString()+Path.GetExtension(updateProductDto.Image.FileName);
+                var imageFolder = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot", "ProductsImages");
+
+                if (!Directory.Exists(imageFolder))
+                {
+                    Directory.CreateDirectory(imageFolder);
+                }
+
+                var filePath = Path.Combine(imageFolder, fileName);
+                FileInfo file = new FileInfo(filePath);
+                if (file.Exists)
+                {
+                    file.Delete();
+                }
+                using var fileStream = new FileStream(filePath, FileMode.Create);
+                updateProductDto.Image.CopyTo(fileStream);
+
+                var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.Value}{HttpContext.Request.PathBase.Value}";
+
+                product.ImgUrl = $"{baseUrl}/ProductsImages/{fileName}";
+                product.ImgUrlLocal = filePath;
+
+            } else
+            {
+                product.ImgUrlLocal = "https://placehold.co/600x400";
+            }
+
             if (!_productRepository.UpdateProduct(product))
             {
                 ModelState.AddModelError("CustomError", "Ocurrio un error al actualizar el producto");
