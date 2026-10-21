@@ -6,6 +6,7 @@ using APIecommerce.Constants;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,7 +45,11 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.CacheProfiles.Add(CacheProfiles.Default10, CacheProfiles.Profille10);
+    options.CacheProfiles.Add(CacheProfiles.Default20, CacheProfiles.Profille20);
+});
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
@@ -58,6 +63,13 @@ builder.Services.AddCors(options =>
     );
 });
 
+builder.Services.AddResponseCaching(options =>
+{
+    options.MaximumBodySize =1024 * 1024;
+    options.UseCaseSensitivePaths = true;
+    
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -69,6 +81,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors(PolicyNames.AllowSpecificOrigin);
+
+app.UseResponseCaching();
 
 app.UseAuthentication();
 

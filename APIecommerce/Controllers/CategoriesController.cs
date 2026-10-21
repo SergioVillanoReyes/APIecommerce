@@ -1,9 +1,9 @@
+using APIecommerce.Constants;
 using APIecommerce.Models;
 using APIecommerce.Models.Dtos;
 using APIecommerce.Repository.IRepository;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIecommerce.Controllers
@@ -30,6 +30,7 @@ namespace APIecommerce.Controllers
         public IActionResult GetCategories()
         {
             var categories = _categoryRepository.GetCategories();
+            
             var categoriesDto = new List<CategoryDto>();
 
             foreach (var category in categories)
@@ -42,13 +43,17 @@ namespace APIecommerce.Controllers
 
         [AllowAnonymous]
         [HttpGet("{id:int}", Name = "GetCategory")]
+        //[ResponseCache(Duration = 10)]
+        [ResponseCache(CacheProfileName = CacheProfiles.Default10)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult GetCategory(int id)
         {
+            System.Console.WriteLine($"Categorias entrando peticion {id}....");
             var category = _categoryRepository.GetCategory(id);
+            System.Console.WriteLine($"....Categorias saliendo peticion {id}");
             if(category == null)
             {
                 return NotFound($"La categoria id = {id} no existe");
