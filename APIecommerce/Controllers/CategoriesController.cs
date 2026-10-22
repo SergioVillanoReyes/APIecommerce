@@ -3,7 +3,7 @@ using APIecommerce.Models;
 using APIecommerce.Models.Dtos;
 using APIecommerce.Repository.IRepository;
 using Asp.Versioning;
-using AutoMapper;
+using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,12 +17,10 @@ namespace APIecommerce.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryRepository _categoryRepository;
-        private readonly IMapper _mapper;
 
-        public CategoriesController(ICategoryRepository categoryRepository, IMapper mapper)
+        public CategoriesController(ICategoryRepository categoryRepository)
         {
             _categoryRepository = categoryRepository;
-            _mapper = mapper;
         }
 
         [AllowAnonymous]
@@ -34,13 +32,7 @@ namespace APIecommerce.Controllers
         public IActionResult GetCategories()
         {
             var categories = _categoryRepository.GetCategories().OrderBy(c => c.Id);
-            
-            var categoriesDto = new List<CategoryDto>();
-
-            foreach (var category in categories)
-            {
-                categoriesDto.Add(_mapper.Map<CategoryDto>(category));
-            }
+            var categoriesDto = categories.Adapt<List<CategoryDto>>();
 
             return Ok(categoriesDto);
         }
@@ -54,13 +46,7 @@ namespace APIecommerce.Controllers
         public IActionResult GetCategoriesOrderById()
         {
             var categories = _categoryRepository.GetCategories().OrderBy(c => c.Name);
-            
-            var categoriesDto = new List<CategoryDto>();
-
-            foreach (var category in categories)
-            {
-                categoriesDto.Add(_mapper.Map<CategoryDto>(category));
-            }
+            var categoriesDto = categories.Adapt<List<CategoryDto>>();
 
             return Ok(categoriesDto);
         }
@@ -82,7 +68,7 @@ namespace APIecommerce.Controllers
             {
                 return NotFound($"La categoria id = {id} no existe");
             }
-            var categoryDto = _mapper.Map<CategoryDto>(category);
+            var categoryDto = category.Adapt<CategoryDto>();
 
             return Ok(categoryDto);
         }
@@ -106,7 +92,7 @@ namespace APIecommerce.Controllers
                 return BadRequest(ModelState);
             }
 
-            var category = _mapper.Map<Category>(createCategoryDto);
+            var category = createCategoryDto.Adapt<Category>();
             if (!_categoryRepository.CreateCategory(category))
             {
                 ModelState.AddModelError("CustomError", "Ocurrio un error");
@@ -140,7 +126,7 @@ namespace APIecommerce.Controllers
                 return BadRequest(ModelState);
             }
 
-            var category = _mapper.Map<Category>(updateCategoryDto);
+            var category = updateCategoryDto.Adapt<Category>();
             category.Id = id;
             if (!_categoryRepository.UpdateCategory(category))
             {

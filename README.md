@@ -21,12 +21,12 @@ Disponible en `http://localhost:5261`. OpenAPI en `/openapi/v1.json` durante des
 
 - **Controllers** (`Categories`, `Products`, `Users`): reciben solicitudes HTTP, validan datos de entrada y devuelven códigos de estado y DTOs. Las lecturas públicas están marcadas explícitamente; las operaciones administrativas requieren el rol `Admin`.
 - **Models y DTOs**: los modelos representan las entidades guardadas en la base de datos (`Category`, `Product`, `User`). Los DTOs definen los datos aceptados o devueltos por la API, sin exponer directamente las entidades en cada endpoint.
-- **Mapping**: perfiles de AutoMapper convierten entre modelos y DTOs; el perfil de productos también incluye el nombre de la categoría en su respuesta.
+- **Mapping**: Mapster convierte entre modelos y DTOs; `MapsterConfig` define el nombre de la categoría en las respuestas de productos.
 - **Repository**: cada repositorio implementa una interfaz de `Repository/IRepository`. Encapsula consultas y operaciones CRUD para categorías y productos, además de registro, autenticación y generación de tokens para usuarios.
 - **Data y Migrations**: `ApplicationDBContext` define los conjuntos de categorías, productos y usuarios. EF Core usa SQL Server como proveedor y las migraciones describen los cambios del esquema.
-- **Flujo de una solicitud**: el controlador valida la entrada, llama a la interfaz del repositorio y transforma el resultado con AutoMapper; el repositorio consulta o actualiza la base de datos mediante `ApplicationDBContext`.
+- **Flujo de una solicitud**: el controlador valida la entrada, llama a la interfaz del repositorio y transforma el resultado con Mapster; el repositorio consulta o actualiza la base de datos mediante `ApplicationDBContext`.
 - **Servicios transversales**: `Program.cs` registra dependencias, autenticación JWT, versionado de API, CORS, caché de respuestas y OpenAPI. BCrypt se utiliza para proteger contraseñas.
 
-Dependencias principales: Entity Framework Core y SQL Server, Asp.Versioning, AutoMapper, BCrypt.Net-Next y JWT Bearer.
+Dependencias principales: Entity Framework Core y SQL Server, Asp.Versioning, Mapster, BCrypt.Net-Next y JWT Bearer.
 
 Categorías tiene v1 y v2; productos y usuarios usan rutas versionadas. Lecturas de categorías/productos y registro/login son públicos; las demás operaciones requieren rol `Admin`.

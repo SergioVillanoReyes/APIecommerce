@@ -3,6 +3,7 @@ using APIecommerce.Data;
 using APIecommerce.Repository.IRepository;
 using APIecommerce.Repository;
 using APIecommerce.Constants;
+using APIecommerce.Mapping;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -16,13 +17,21 @@ var builder = WebApplication.CreateBuilder(args);
 var dbConnectionString = builder.Configuration.GetConnectionString("ConexionSql")
     ?? throw new InvalidOperationException(
         "Configure la cadena de conexión 'ConexionSql' mediante User Secrets o la variable de entorno ConnectionStrings__ConexionSql.");
-builder.Services.AddDbContext<ApplicationDBContext>(options => options.UseSqlServer(dbConnectionString));
+builder.Services.AddDbContext<ApplicationDBContext>(options =>
+  options.UseSqlServer(dbConnectionString)
+  .UseSeeding((context, _) =>
+  {
+    var appContext = (ApplicationDBContext)context;
+    // Seeding de Roles
+   DataSeeder.SeedData(appContext);
+  })
+);
 
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
-builder.Services.AddAutoMapper(_ => { }, typeof(Program).Assembly);
+MapsterConfig.RegisterMappings();
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 .AddEntityFrameworkStores<ApplicationDBContext>()

@@ -1,6 +1,6 @@
 using APIecommerce.Models.Dtos;
 using APIecommerce.Repository.IRepository;
-using AutoMapper;
+using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,12 +14,9 @@ namespace APIecommerce.Controllers
         
         private readonly IUserRepository _userRepository;
 
-        private readonly IMapper _mapper;
-
-        public UsersController(IUserRepository userRepository, IMapper mapper)
+        public UsersController(IUserRepository userRepository)
         {
             _userRepository = userRepository;
-            _mapper = mapper;
         }
 
         [HttpGet]
@@ -28,7 +25,7 @@ namespace APIecommerce.Controllers
         public IActionResult GetUsers()
         {
             var users = _userRepository.Getusers();
-            var usersDto = _mapper.Map<List<UserDto>>(users);
+            var usersDto = users.Adapt<List<UserDto>>();
             return Ok(usersDto);
         }
 
@@ -44,7 +41,7 @@ namespace APIecommerce.Controllers
             {
                 return NotFound($"El usuario id = {userId} no existe");
             }
-            var userDto = _mapper.Map<UserDto>(user);
+            var userDto = user.Adapt<UserDto>();
 
             return Ok(userDto);
         }
